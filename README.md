@@ -114,13 +114,9 @@ if (type == 0) {
 * [IconPark](https://iconpark.oceanengine.com/official)
 * [xicons](https://xicons.org/)
 
-### API
+### 一言数据
 
-* [Hitokoto 一言](https://hitokoto.cn/) - 国际版接口，支持多语言
-* [xygeng API](https://api.xygeng.cn) - 备用一言接口
-* [guozhi API](http://guozhivip.com) - 备用一言接口
-
-> 项目采用多源API自动切换机制，当主API不可用时自动切换到备用API
+项目采用本地一言数据，无需外部 API 请求，加载更快更稳定。
 
 <a title="SSL" target="_blank" href="https://myssl.com/seal/detail?domain=bajjdy.top"><img src="https://img.shields.io/badge/MySSL-安全认证-brightgreen"></a>&nbsp;<a title="CDN" target="_blank" href="https://cdnjs.com/"><img src="https://img.shields.io/badge/CDN-Cloudflare-blue"></a>&nbsp;<a title="Copyright" target="_blank" href="https://bajjdy.top/"><img src="https://img.shields.io/badge/Copyright%20%C2%A9%202025--2026-BAJJDY-red"></a>
 

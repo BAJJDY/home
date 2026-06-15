@@ -127,4 +127,4 @@ You can modify the site icons in `public/images/icon`.
 
 ### Acknowledgment
 
-This project is based on [imsyy/home](https://github.com/imsyy/home) for personal use only.
+This project is based on [imsyy/home](https://github.com/imsyy/home).

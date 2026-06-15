@@ -126,4 +126,4 @@ if (type == 0) {
 
 ### 致谢
 
-本项目基于 [imsyy/home](https://github.com/imsyy/home) 进行二次修改，仅供个人使用。
+本项目基于 [imsyy/home](https://github.com/imsyy/home) 进行二次修改。

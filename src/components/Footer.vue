@@ -52,6 +52,7 @@ const siteUrl = computed(() => {
   text-align: center;
   z-index: 0;
   font-size: 14px;
+  font-family: "SiteLinksFont", sans-serif;
   .power {
     animation: fade 0.3s;
   }

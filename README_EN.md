@@ -115,9 +115,13 @@ You can modify the site icons in `public/images/icon`.
 * [IconPark](https://iconpark.oceanengine.com/official)
 * [xicons](https://xicons.org/)
 
-### Hitokoto Configuration
+### API
 
-Hitokoto API URLs are configured in the `.env` file, supporting multi-source automatic switching. When all APIs are unavailable, local data will be used as fallback.
+* [Hitokoto](https://hitokoto.cn/) - International version, supports multiple languages
+* [xygeng API](https://api.xygeng.cn) - Backup hitokoto API
+* [guozhi API](http://guozhivip.com) - Backup hitokoto API
+
+> The project uses a multi-source API automatic switching mechanism. When the primary API is unavailable, it automatically switches to the backup API.
 
 <a title="SSL" target="_blank" href="https://myssl.com/seal/detail?domain=bajjdy.top"><img src="https://img.shields.io/badge/MySSL-Secure-brightgreen"></a>&nbsp;<a title="CDN" target="_blank" href="https://cdnjs.com/"><img src="https://img.shields.io/badge/CDN-Cloudflare-blue"></a>&nbsp;<a title="Copyright" target="_blank" href="https://bajjdy.top/"><img src="https://img.shields.io/badge/Copyright%20%C2%A9%202025--2026-BAJJDY-red"></a>
 

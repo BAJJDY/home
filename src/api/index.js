@@ -1,20 +1,22 @@
 /**
- * 一言
+ * 一言 API（加密保护）
  */
 
-import { encrypt } from "@/utils/crypto";
+import { getRequestHeaders } from "@/utils/encrypt";
 
-// 获取一言数据（使用代理）
+// 获取一言数据（使用代理 + 签名保护）
 export const getHitokoto = async () => {
   try {
+    const headers = getRequestHeaders();
     const res = await fetch("/api/", {
       method: "GET",
       mode: "cors",
+      headers: headers,
     });
     const data = await res.json();
     return {
-      hitokoto: encrypt(data.hitokoto),
-      from: encrypt(data.from || "未知"),
+      hitokoto: data.hitokoto,
+      from: data.from || "未知",
     };
   } catch (error) {
     console.error("一言API请求失败:", error);

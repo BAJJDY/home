@@ -1,0 +1,40 @@
+{
+  "name": "home",
+  "author": "BAJJDY",
+  "github": "https://github.com/BAJJDY/",
+  "home": "https://bajjdy.top",
+  "private": true,
+  "version": "4.1.5",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview",
+    "format": "prettier --write src/",
+    "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts,.vue --fix"
+  },
+  "dependencies": {
+    "element-plus": "^2.6.1",
+    "pinia": "^2.1.7",
+    "pinia-plugin-persistedstate": "^3.2.1",
+    "swiper": "^9.4.1",
+    "vue": "^3.4.21"
+  },
+  "devDependencies": {
+    "@icon-park/vue-next": "^1.4.2",
+    "@vicons/fa": "^0.12.0",
+    "@vicons/utils": "^0.1.4",
+    "@vitejs/plugin-vue": "^4.6.2",
+    "eslint": "^8.57.0",
+    "eslint-plugin-vue": "^9.22.0",
+    "prettier": "^3.2.5",
+    "sass": "^1.71.1",
+    "terser": "^5.29.1",
+    "unplugin-auto-import": "^0.11.5",
+    "unplugin-vue-components": "^0.22.12",
+    "vite": "^4.5.2",
+    "vite-plugin-compression": "^0.5.1",
+    "vite-plugin-pwa": "^0.14.7"
+  },
+  "packageManager": "pnpm@11.5.1+sha512.93f7b57422ea7068257235b4c16eb60762eb68e1dc23723199cc739043ea9be2c4143274a399d8c6defa2b1176226d9ca1c4b63482d6200c1a8fbaa78c1d1485"
+}

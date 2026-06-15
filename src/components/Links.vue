@@ -83,7 +83,7 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .links {
-  font-family: "SiteLinksFont", "HarmonyOS_Regular", sans-serif !important;
+  font-family: "SiteLinksFont", "Pacifico-Regular", sans-serif !important;
   .line {
     margin: 2rem 0.25rem 1rem;
     font-size: 1.1rem;

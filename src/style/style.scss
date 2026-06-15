@@ -38,23 +38,20 @@ p {
 // 字体文件
 @font-face {
   font-family: "Pacifico-Regular";
-  font-display: optional;
+  font-display: swap;
   src: url("/font/Pacifico-Regular-all.ttf") format("truetype");
-  unicode-range: U+0041-005A, U+0061-007A, U+0020-002F, U+003A-0040, U+005B-0060, U+007B-007E, U+00C0-024F, U+1E00-1EFF;
 }
 
 @font-face {
   font-family: "UnidreamLED";
-  font-display: optional;
+  font-display: swap;
   src: url("/font/UnidreamLED.ttf") format("truetype");
-  unicode-range: U+0030-003A;
 }
 
 @font-face {
   font-family: "SiteLinksFont";
-  font-display: optional;
+  font-display: swap;
   src: url("/font/d3d8d77ff.ttf") format("truetype");
-  unicode-range: U+4E00-9FFF, U+3400-4DBF, U+0041-005A, U+0061-007A, U+0020-002F, U+003A-0040, U+3000-303F, U+FF00-FFEF;
 }
 
 // 基础样式

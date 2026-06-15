@@ -115,9 +115,9 @@ You can modify the site icons in `public/images/icon`.
 * [IconPark](https://iconpark.oceanengine.com/official)
 * [xicons](https://xicons.org/)
 
-### Hitokoto Data
+### Hitokoto Configuration
 
-The project uses local hitokoto data, no external API requests required, faster and more stable loading.
+Hitokoto API URLs are configured in the `.env` file, supporting multi-source automatic switching. When all APIs are unavailable, local data will be used as fallback.
 
 <a title="SSL" target="_blank" href="https://myssl.com/seal/detail?domain=bajjdy.top"><img src="https://img.shields.io/badge/MySSL-Secure-brightgreen"></a>&nbsp;<a title="CDN" target="_blank" href="https://cdnjs.com/"><img src="https://img.shields.io/badge/CDN-Cloudflare-blue"></a>&nbsp;<a title="Copyright" target="_blank" href="https://bajjdy.top/"><img src="https://img.shields.io/badge/Copyright%20%C2%A9%202025--2026-BAJJDY-red"></a>
 

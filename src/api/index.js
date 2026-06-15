@@ -2,6 +2,8 @@
  * 一言
  */
 
+import { encrypt } from "@/utils/crypto";
+
 // 获取一言数据（使用代理）
 export const getHitokoto = async () => {
   try {
@@ -11,8 +13,8 @@ export const getHitokoto = async () => {
     });
     const data = await res.json();
     return {
-      hitokoto: data.hitokoto,
-      from: data.from || "未知",
+      hitokoto: encrypt(data.hitokoto),
+      from: encrypt(data.from || "未知"),
     };
   } catch (error) {
     console.error("一言API请求失败:", error);

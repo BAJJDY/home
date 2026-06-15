@@ -13,6 +13,7 @@ import { Error } from "@icon-park/vue-next";
 import { getHitokoto } from "@/api";
 import { mainStore } from "@/store";
 import debounce from "@/utils/debounce.js";
+import { decrypt } from "@/utils/crypto";
 
 const store = mainStore();
 
@@ -60,8 +61,8 @@ const typeWriter = (text, speed = 80) => {
 const getHitokotoData = async () => {
   try {
     const result = await getHitokoto();
-    hitokotoData.text = result.hitokoto;
-    hitokotoData.from = result.from;
+    hitokotoData.text = decrypt(result.hitokoto);
+    hitokotoData.from = decrypt(result.from);
     typeWriter(hitokotoData.text);
   } catch (error) {
     ElMessage({

@@ -21,7 +21,7 @@
 
 <script setup>
 import { mainStore } from "@/store";
-import config from "@/../package.json";
+import config from "@/config";
 
 const store = mainStore();
 const fullYear = new Date().getFullYear();

@@ -55,7 +55,7 @@
 import { CloseOne, SettingTwo, GithubOne, AddOne, Bug } from "@icon-park/vue-next";
 import { mainStore } from "@/store";
 import Set from "@/components/Set.vue";
-import config from "@/../package.json";
+import config from "@/config";
 
 const store = mainStore();
 const closeShow = ref(false);

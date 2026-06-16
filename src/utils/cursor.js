@@ -85,8 +85,8 @@ class Cursor {
 
   render() {
     if (!this.isHidden && this.pos.curr) {
-      this.pos.prev.x = lerp(this.pos.prev.x, this.pos.curr.x, 0.6);
-      this.pos.prev.y = lerp(this.pos.prev.y, this.pos.curr.y, 0.6);
+      this.pos.prev.x = lerp(this.pos.prev.x, this.pos.curr.x, 0.35);
+      this.pos.prev.y = lerp(this.pos.prev.y, this.pos.curr.y, 0.35);
       this.move(this.pos.prev.x, this.pos.prev.y);
     }
     requestAnimationFrame(() => this.render());

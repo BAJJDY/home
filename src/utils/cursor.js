@@ -1,10 +1,22 @@
 let mainCursor;
 
+Math.lerp = (a, b, n) => (1 - n) * a + n * b;
+
 class Cursor {
   constructor() {
+    this.pos = {
+      curr: null,
+      prev: null,
+    };
     this.cursor = null;
     this.create();
     this.init();
+    this.render();
+  }
+
+  move(left, top) {
+    this.cursor.style["left"] = `${left}px`;
+    this.cursor.style["top"] = `${top}px`;
   }
 
   create() {
@@ -13,10 +25,7 @@ class Cursor {
       this.cursor.id = "cursor";
       this.cursor.classList.add("xs-hidden");
       this.cursor.classList.add("hidden");
-      this.cursor.style.pointerEvents = "none";
-      this.cursor.style.position = "fixed";
-      this.cursor.style.zIndex = "99999";
-      document.body.appendChild(this.cursor);
+      document.body.append(this.cursor);
     }
 
     const style = document.createElement("style");
@@ -27,19 +36,40 @@ class Cursor {
 
   refresh() {
     if (this.styleEl) this.styleEl.remove();
-    if (this.cursor) this.cursor.remove();
-    this.cursor = null;
+    this.cursor.classList.remove("active");
+    this.pos = {
+      curr: null,
+      prev: null,
+    };
     this.create();
     this.init();
+    this.render();
   }
 
   init() {
-    document.addEventListener("mouseenter", () => {
+    document.onmousemove = (e) => {
+      this.pos.curr == null && this.move(e.clientX - 8, e.clientY - 8);
+      this.pos.curr = {
+        x: e.clientX - 8,
+        y: e.clientY - 8,
+      };
       this.cursor.classList.remove("hidden");
-    });
-    document.addEventListener("mouseleave", () => {
-      this.cursor.classList.add("hidden");
-    });
+    };
+    document.onmouseenter = () => this.cursor.classList.remove("hidden");
+    document.onmouseleave = () => this.cursor.classList.add("hidden");
+    document.onmousedown = () => this.cursor.classList.add("active");
+    document.onmouseup = () => this.cursor.classList.remove("active");
+  }
+
+  render() {
+    if (this.pos.prev) {
+      this.pos.prev.x = Math.lerp(this.pos.prev.x, this.pos.curr.x, 0.35);
+      this.pos.prev.y = Math.lerp(this.pos.prev.y, this.pos.curr.y, 0.35);
+      this.move(this.pos.prev.x, this.pos.prev.y);
+    } else {
+      this.pos.prev = this.pos.curr;
+    }
+    requestAnimationFrame(() => this.render());
   }
 }
 

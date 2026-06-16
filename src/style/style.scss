@@ -212,20 +212,21 @@ p {
   position: fixed;
   width: 18px;
   height: 18px;
-  background: #fff;
-  border-radius: 25px;
-  opacity: 0.25;
+  background: rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
   z-index: 10086;
   pointer-events: none;
   transition: 0.2s ease-in-out;
   transition-property: background, opacity, transform;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
 
   &.hidden {
     opacity: 0;
   }
 
   &.active {
-    opacity: 0.5;
+    opacity: 0.6;
     transform: scale(0.5);
   }
 }

@@ -7,8 +7,27 @@ import vue from "@vitejs/plugin-vue";
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
 import viteCompression from "vite-plugin-compression";
+import crypto from "crypto";
 
-// https://vitejs.dev/config/
+const API_SECRET = "BAJJDY_API_SECRET_KEY_2026_06_15";
+
+const verifyToken = (req) => {
+  const token = req.headers["x-request-token"];
+  const time = req.headers["x-request-time"];
+  if (!token || !time) return false;
+  const now = Date.now();
+  if (Math.abs(now - parseInt(time)) > 5 * 60 * 1000) return false;
+  const url = new URL(req.url, "http://localhost");
+  const path = url.pathname;
+  const raw = `${path}|${time}|${API_SECRET}`;
+  let expected = "";
+  for (let i = 0; i < raw.length; i++) {
+    expected += String.fromCharCode(raw.charCodeAt(i) ^ API_SECRET.charCodeAt(i % API_SECRET.length));
+  }
+  const expectedEncoded = Buffer.from(expected).toString("base64")
+    .replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+  return token === expectedEncoded;
+};
 export default ({ mode }) =>
   defineConfig({
     plugins: [
@@ -20,6 +39,53 @@ export default ({ mode }) =>
       Components({
         resolvers: [ElementPlusResolver()],
       }),
+      {
+        name: "api-headers",
+        configureServer(server) {
+          server.middlewares.use((req, res, next) => {
+            // 鉴权：一言 API
+            if (req.url.startsWith("/api/hitokoto")) {
+              if (!verifyToken(req)) {
+                res.statusCode = 403;
+                res.setHeader("Content-Type", "text/plain");
+                res.end("403 Forbidden");
+                return;
+              }
+            }
+            // 禁止缓存：图片 API（防止浏览器/CDN 缓存命中）
+            if (req.url.startsWith("/api/fj") || req.url.startsWith("/api/dm") || req.url.startsWith("/api/bg/")) {
+              res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+              res.setHeader("Pragma", "no-cache");
+              res.setHeader("Expires", "0");
+            }
+            next();
+          });
+        },
+      },
+      // 强制覆盖图片 API 代理响应头，去除源站缓存指令
+      {
+        name: "image-no-store",
+        configureServer(server) {
+          server.middlewares.use((req, res, next) => {
+            if (
+              req.url.startsWith("/api/fj") ||
+              req.url.startsWith("/api/dm") ||
+              req.url.startsWith("/api/bg/")
+            ) {
+              const originalWriteHead = res.writeHead.bind(res);
+              res.writeHead = function (statusCode, statusMessage, headers) {
+                const merged = Object.assign({}, headers || {}, {
+                  "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+                  Pragma: "no-cache",
+                  Expires: "0",
+                });
+                return originalWriteHead(statusCode, statusMessage, merged);
+              };
+            }
+            next();
+          });
+        },
+      },
       VitePWA({
         registerType: "autoUpdate",
         workbox: {
@@ -27,17 +93,33 @@ export default ({ mode }) =>
           clientsClaim: true,
           runtimeCaching: [
             {
-              urlPattern: /(.*?)\.(js|css|woff2|woff|ttf)/, // js / css 静态资源缓存
+              urlPattern: /(.*?)\.(js|css|woff2|woff|ttf)/,
               handler: "CacheFirst",
               options: {
                 cacheName: "js-css-cache",
               },
             },
             {
-              urlPattern: /(.*?)\.(png|jpe?g|svg|gif|bmp|psd|tiff|tga|eps)/, // 图片缓存
+              urlPattern: /^\/images\//,
               handler: "CacheFirst",
               options: {
-                cacheName: "image-cache",
+                cacheName: "local-image-cache",
+              },
+            },
+            {
+              urlPattern: /^\/api\/hitokoto/,
+              handler: "NetworkOnly",
+              options: {
+                cacheName: "hitokoto-api-cache",
+                networkTimeoutSeconds: 0,
+              },
+            },
+            {
+              urlPattern: /^\/api\/(fj|dm|bg\/)/,
+              handler: "NetworkOnly",
+              options: {
+                cacheName: "image-api-cache",
+                networkTimeoutSeconds: 0,
               },
             },
           ],
@@ -94,6 +176,55 @@ export default ({ mode }) =>
     server: {
       port: "3000",
       open: true,
+      proxy: {
+        "/api/hitokoto-fallback": {
+          target: "https://api.xygeng.cn",
+          changeOrigin: true,
+          rewrite: (path) =>
+            path.replace(/^\/api\/hitokoto-fallback/, "/one"),
+        },
+        "/api/hitokoto": {
+          target: "https://international.v1.hitokoto.cn",
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api\/hitokoto/, ""),
+        },
+        "/api/fj": {
+          target: "https://tu.ltyuanfang.cn",
+          changeOrigin: true,
+          followRedirects: true,
+          rewrite: (path) => path.replace(/^\/api\/fj/, "/api/fengjing.php"),
+          headers: {
+            "Cache-Control": "no-store",
+          },
+        },
+        "/api/bg/fengjing": {
+          target: "https://tu.ltyuanfang.cn",
+          changeOrigin: true,
+          followRedirects: true,
+          rewrite: (path) => path.replace(/^\/api\/bg\/fengjing/, "/api/fengjing.php"),
+          headers: {
+            "Cache-Control": "no-store",
+          },
+        },
+        "/api/dm": {
+          target: "https://t.alcy.cc",
+          changeOrigin: true,
+          followRedirects: true,
+          rewrite: (path) => path.replace(/^\/api\/dm/, "/ycy"),
+          headers: {
+            "Cache-Control": "no-store",
+          },
+        },
+        "/api/bg/dongman": {
+          target: "https://t.alcy.cc",
+          changeOrigin: true,
+          followRedirects: true,
+          rewrite: (path) => path.replace(/^\/api\/bg\/dongman/, "/ycy"),
+          headers: {
+            "Cache-Control": "no-store",
+          },
+        },
+      },
     },
     resolve: {
       alias: [

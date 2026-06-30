@@ -108,25 +108,25 @@ const siteName = import.meta.env.VITE_SITE_NAME;
   }
   &.loaded {
     visibility: hidden;
-    transform: translateY(-100%);
+    opacity: 0;
     transition:
-      transform 0.3s 1s ease-out,
-      visibility 0.3s 1s ease-out;
+      opacity 0.25s ease-out,
+      visibility 0.25s ease-out;
     .loader {
       .loader-circle,
       .loader-text {
         opacity: 0;
-        transition: opacity 0.3s ease-out;
+        transition: opacity 0.15s ease-out;
       }
     }
     .loader-section {
       &.section-left {
         transform: translateX(-100%);
-        transition: transform 0.5s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+        transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
       }
       &.section-right {
         transform: translateX(100%);
-        transition: transform 0.5s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+        transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
       }
     }
   }

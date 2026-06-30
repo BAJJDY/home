@@ -1,176 +1,94 @@
 <template>
-  <div :class="store.backgroundShow ? 'cover show' : 'cover'">
+  <div class="bg-box">
     <img
-      v-show="store.imgLoadStatus"
+      v-if="bgUrl"
       :src="bgUrl"
+      :key="bgUrl"
       class="bg"
-      alt="cover"
-      @load="imgLoadComplete"
-      @error.once="imgLoadError"
-      @animationend="imgAnimationEnd"
+      @load="onImgLoad"
+      draggable="false"
+      alt="壁纸"
     />
-    <div :class="store.backgroundShow ? 'gray hidden' : 'gray'" />
-    <Transition name="fade" mode="out-in">
-      <a
-        v-if="store.backgroundShow && store.coverType != '3'"
-        class="down"
-        :href="bgUrl"
-        target="_blank"
-      >
-        下载壁纸
-      </a>
-    </Transition>
   </div>
 </template>
 
 <script setup>
+import { ref, watch, onMounted, onBeforeUnmount } from "vue";
 import { mainStore } from "@/store";
-import { Error } from "@icon-park/vue-next";
 
 const store = mainStore();
-const bgUrl = ref(null);
-const imgTimeout = ref(null);
-const emit = defineEmits(["loadComplete"]);
+const bgUrl = ref("");
+let loadTimer = null;
+let isInitialized = false;
 
-// 壁纸随机数
-// 请依据文件夹内的图片个数修改 Math.random() 后面的第一个数字
-const bgRandom = Math.floor(Math.random() * 10 + 1);
-
-// 随机动漫API列表
-const acgApis = [
-  "https://t.alcy.cc/ycy", // 二次元动漫
-];
-
-// 更换壁纸链接
-const changeBg = (type) => {
-  // 添加时间戳防止缓存
-  const timestamp = `?t=${Date.now()}`;
-  if (type == 0) {
-    bgUrl.value = `/images/background${bgRandom}.jpg`;
-  } else if (type == 1) {
-    bgUrl.value = `https://tu.ltyuanfang.cn/api/fengjing.php${timestamp}`;
-  } else if (type == 2) {
-    // 随机选择一个动漫API
-    const api = acgApis[Math.floor(Math.random() * acgApis.length)];
-    bgUrl.value = `${api}${timestamp}`;
+const showContent = () => {
+  if (!store.imgLoadStatus) {
+    store.setImgLoadStatus(true);
   }
 };
 
-// 图片加载完成
-const imgLoadComplete = () => {
-  imgTimeout.value = setTimeout(
-    () => {
-      store.setImgLoadStatus(true);
-    },
-    Math.floor(Math.random() * (600 - 300 + 1)) + 300,
-  );
+const generateUrl = (type) => {
+  // 1/"1" = 风景 (fj), 2/"2" = 动漫 (dm)
+  const isFj = type == 1 || type === "1";
+  return isFj ? "/api/fj?t=" + Date.now() : "/api/dm?t=" + Date.now();
 };
 
-// 图片动画完成
-const imgAnimationEnd = () => {
-  emit("loadComplete");
+const changeBg = (type) => {
+  clearTimeout(loadTimer);
+  loadTimer = setTimeout(showContent, 800);
+  bgUrl.value = generateUrl(type);
 };
 
-// 图片显示失败
-const imgLoadError = () => {
-  console.error("壁纸加载失败：", bgUrl.value);
-  ElMessage({
-    message: "壁纸加载失败，已临时切换回默认",
-    icon: h(Error, {
-      theme: "filled",
-      fill: "#efefef",
-    }),
-  });
-  bgUrl.value = `/images/background${bgRandom}.jpg`;
+const onImgLoad = () => {
+  showContent();
 };
 
-// 监听壁纸切换
 watch(
   () => store.coverType,
-  (value) => {
-    changeBg(value);
-  },
+  (newType) => {
+    if (!isInitialized) return;
+    changeBg(newType);
+  }
 );
 
 onMounted(() => {
-  // 加载壁纸
   changeBg(store.coverType);
+  isInitialized = true;
 });
 
 onBeforeUnmount(() => {
-  clearTimeout(imgTimeout.value);
+  clearTimeout(loadTimer);
 });
 </script>
 
 <style lang="scss" scoped>
-.cover {
-  position: absolute;
+.bg-box {
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  transition: 0.25s;
   z-index: -1;
+  overflow: hidden;
+}
 
-  &.show {
-    z-index: 1;
-  }
+.bg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  backface-visibility: hidden;
+  animation: fade-in 0.4s ease-out forwards;
+}
 
-  .bg {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    backface-visibility: hidden;
-    filter: blur(20px) brightness(0.3);
-    transition:
-      filter 0.3s,
-      transform 0.3s;
-    animation: fade-blur-in 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-    animation-delay: 0.45s;
+@keyframes fade-in {
+  from {
+    opacity: 0;
   }
-  .gray {
+  to {
     opacity: 1;
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-image: radial-gradient(rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0.5) 100%),
-      radial-gradient(rgba(0, 0, 0, 0) 33%, rgba(0, 0, 0, 0.3) 166%);
-
-    transition: 1.5s;
-    &.hidden {
-      opacity: 0;
-      transition: 1.5s;
-    }
-  }
-  .down {
-    font-size: 16px;
-    color: white;
-    position: absolute;
-    bottom: 30px;
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    display: block;
-    padding: 20px 26px;
-    border-radius: 8px;
-    background-color: #00000030;
-    width: 120px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    &:hover {
-      transform: scale(1.05);
-      background-color: #00000060;
-    }
-    &:active {
-      transform: scale(1);
-    }
   }
 }
 </style>

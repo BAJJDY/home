@@ -77,12 +77,30 @@ watch(
 onMounted(() => {
   // 检测本地代码是否更新，如有更新则强制刷新
   const checkVersion = () => {
-    const currentVersion = "1.0.2"; // 每次更新时修改此版本号
+    const currentVersion = "1.0.3"; // 每次更新时修改此版本号
     const savedVersion = localStorage.getItem("app_version");
     if (savedVersion && savedVersion !== currentVersion) {
       // 版本不一致，清除缓存并刷新
       localStorage.setItem("app_version", currentVersion);
-      window.location.reload(true);
+      // 清除 Service Worker 缓存
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.getRegistrations().then((registrations) => {
+          registrations.forEach((registration) => {
+            registration.unregister();
+          });
+        });
+      }
+      // 清除所有缓存
+      if ("caches" in window) {
+        caches.keys().then((names) => {
+          names.forEach((name) => {
+            caches.delete(name);
+          });
+        });
+      }
+      setTimeout(() => {
+        window.location.reload(true);
+      }, 200);
     } else {
       localStorage.setItem("app_version", currentVersion);
     }
@@ -146,8 +164,7 @@ onBeforeUnmount(() => {
   height: 100%;
   transform: scale(1.2);
   transition: transform 0.3s;
-  animation: fade-blur-main-in 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  animation-delay: 0.5s;
+  animation: fade-blur-main-in 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   .container {
     width: 100%;
     height: 100vh;

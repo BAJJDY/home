@@ -151,17 +151,19 @@ const jumpTo = (url) => {
         display: flex;
         flex-direction: row;
         align-items: center;
+        justify-content: flex-start;
+        gap: 14px;
 
         .num {
           font-size: 2rem;
           font-family: "Pacifico-Regular";
+          line-height: 1;
         }
 
         .github {
-          width: 24px;
-          height: 24px;
-          margin-left: 12px;
-          margin-top: 6px;
+          width: 26px;
+          height: 26px;
+          cursor: pointer;
 
           &:hover {
             transform: scale(1.2);
@@ -172,14 +174,24 @@ const jumpTo = (url) => {
       .update {
         margin-top: 30px;
         height: 100%;
+        background: rgba(255, 255, 255, 0.2) !important;
+        border: 1px solid rgba(255, 255, 255, 0.35) !important;
+
+        :deep(.el-card__header) {
+          background: rgba(255, 255, 255, 0.08) !important;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.25) !important;
+          color: #fff !important;
+        }
 
         :deep(.el-card__body) {
           height: 100%;
+          background: transparent !important;
 
           .upnote {
             padding: 20px;
             height: calc(100% - 56px);
             overflow-y: auto;
+            color: rgba(255, 255, 255, 0.9);
 
             .uptext {
               display: flex;

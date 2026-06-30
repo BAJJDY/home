@@ -4,7 +4,6 @@
       <el-collapse-item title="个性壁纸" name="1">
         <div class="bg-set">
           <el-radio-group v-model="coverType" text-color="#ffffff" @change="radioChange">
-            <el-radio value="0" size="large" border>默认壁纸</el-radio>
             <el-radio value="1" size="large" border>随机风景</el-radio>
             <el-radio value="2" size="large" border>随机动漫</el-radio>
           </el-radio-group>

@@ -40,18 +40,27 @@ p {
   font-family: "Pacifico-Regular";
   font-display: swap;
   src: url("/font/Pacifico-Regular-all.ttf") format("truetype");
+  unicode-range: U+0041-005A, U+0061-007A, U+0020-002F, U+003A-0040, U+005B-0060, U+007B-007E, U+00C0-024F, U+1E00-1EFF;
 }
 
 @font-face {
   font-family: "UnidreamLED";
   font-display: swap;
   src: url("/font/UnidreamLED.ttf") format("truetype");
+  unicode-range: U+0030-003A;
 }
 
 @font-face {
   font-family: "SiteLinksFont";
   font-display: swap;
   src: url("/font/d3d8d77ff.ttf") format("truetype");
+  unicode-range: U+4E00-9FFF, U+3400-4DBF, U+0041-005A, U+0061-007A, U+0020-002F, U+003A-0040, U+3000-303F, U+FF00-FFEF;
+}
+
+@font-face {
+  font-family: "FooterFont";
+  font-display: swap;
+  src: url("/font/3720efd83cf7453e.ttf") format("truetype");
 }
 
 // 基础样式
@@ -200,6 +209,14 @@ p {
   }
 }
 
+// 点击波纹动画
+@keyframes ripple {
+  to {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
 // 隐藏元素
 @media (min-width: 910px) and (max-width: 1200px) {
   .sm-hidden {
@@ -212,21 +229,20 @@ p {
   position: fixed;
   width: 18px;
   height: 18px;
-  background: rgba(255, 255, 255, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  border-radius: 50%;
+  background: #fff;
+  border-radius: 25px;
+  opacity: 0.25;
   z-index: 10086;
   pointer-events: none;
   transition: 0.2s ease-in-out;
   transition-property: background, opacity, transform;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
 
   &.hidden {
     opacity: 0;
   }
 
   &.active {
-    opacity: 0.6;
+    opacity: 0.5;
     transform: scale(0.5);
   }
 }

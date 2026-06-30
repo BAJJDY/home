@@ -2,13 +2,27 @@ let mainCursor;
 
 Math.lerp = (a, b, n) => (1 - n) * a + n * b;
 
+const getStyle = (el, attr) => {
+  try {
+    return window.getComputedStyle ? window.getComputedStyle(el)[attr] : el.currentStyle[attr];
+  } catch (e) {
+    console.error(e);
+  }
+  return false;
+};
+
+const cursorInit = () => {
+  mainCursor = new Cursor();
+  return mainCursor;
+};
+
 class Cursor {
   constructor() {
     this.pos = {
       curr: null,
       prev: null,
     };
-    this.cursor = null;
+    this.pt = [];
     this.create();
     this.init();
     this.render();
@@ -28,19 +42,23 @@ class Cursor {
       document.body.append(this.cursor);
     }
 
-    const style = document.createElement("style");
-    style.textContent = `* { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' width='10px' height='10px'%3E%3Ccircle cx='4' cy='4' r='4' fill='white'/%3E%3C/svg%3E") 4 4, auto !important; }`;
-    document.body.appendChild(style);
-    this.styleEl = style;
+    var el = document.getElementsByTagName("*");
+    for (let i = 0; i < el.length; i++)
+      if (getStyle(el[i], "cursor") == "pointer") this.pt.push(el[i].outerHTML);
+
+    document.body.appendChild((this.scr = document.createElement("style")));
+    this.scr.innerHTML = `* {cursor: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' width='10px' height='10px'><circle cx='4' cy='4' r='4' fill='white' /></svg>") 4 4, auto !important}`;
   }
 
   refresh() {
-    if (this.styleEl) this.styleEl.remove();
+    this.scr.remove();
     this.cursor.classList.remove("active");
     this.pos = {
       curr: null,
       prev: null,
     };
+    this.pt = [];
+
     this.create();
     this.init();
     this.render();
@@ -72,10 +90,5 @@ class Cursor {
     requestAnimationFrame(() => this.render());
   }
 }
-
-const cursorInit = () => {
-  mainCursor = new Cursor();
-  return mainCursor;
-};
 
 export default cursorInit;

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div v-if="siteLinks[0]" class="links">
     <div class="line">
       <Icon size="20">
@@ -6,7 +6,6 @@
       </Icon>
       <span class="title">网站列表</span>
     </div>
-    <!-- 网站列表 -->
     <Swiper
       v-if="siteLinks[0]"
       :modules="[Pagination, Mousewheel]"
@@ -25,12 +24,13 @@
             <div
               class="item cards"
               :style="index < 3 ? 'margin-bottom: 20px' : null"
-              @click="jumpLink(item)"
+              @click="jumpLink(item, $event)"
             >
               <Icon size="26">
                 <component :is="siteIcon[item.icon]" />
               </Icon>
               <span class="name text-hidden">{{ item.name }}</span>
+              <span v-for="r in ripples[item.name] || []" :key="r.id" class="ripple" :style="r.style"></span>
             </div>
           </el-col>
         </el-row>
@@ -42,8 +42,7 @@
 
 <script setup>
 import { Icon } from "@vicons/utils";
-// 可前往 https://www.xicons.org 自行挑选并在此处引入
-import { Link, Blog, CompactDisc, Cloud, Compass, Book, Fire, LaptopCode } from "@vicons/fa"; // 注意使用正确的类别
+import { Link, Blog, Book, Cloud, Fire, LaptopCode } from "@vicons/fa";
 import { mainStore } from "@/store";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Pagination, Mousewheel } from "swiper";
@@ -51,7 +50,6 @@ import siteLinks from "@/assets/siteLinks.json";
 
 const store = mainStore();
 
-// 计算网站链接
 const siteLinksList = computed(() => {
   const result = [];
   for (let i = 0; i < siteLinks.length; i += 6) {
@@ -61,67 +59,71 @@ const siteLinksList = computed(() => {
   return result;
 });
 
-// 网站链接图标
 const siteIcon = {
   Blog,
   Cloud,
-  CompactDisc,
-  Compass,
   Book,
   Fire,
   LaptopCode,
 };
 
-// 链接跳转
-const jumpLink = (data) => {
-  window.open(data.link, "_blank");
-};
+const ripples = ref({});
 
-onMounted(() => {
-});
+const jumpLink = (data, event) => {
+  // 波纹动画
+  const itemEl = event.currentTarget;
+  const rect = itemEl.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height) * 2;
+  const x = event.clientX - rect.left - size / 2;
+  const y = event.clientY - rect.top - size / 2;
+  const id = Date.now() + Math.random();
+  const style = {
+    width: size + "px",
+    height: size + "px",
+    top: y + "px",
+    left: x + "px",
+  };
+  if (!ripples.value[data.name]) {
+    ripples.value[data.name] = [];
+  }
+  ripples.value[data.name].push({ id, style });
+  setTimeout(() => {
+    if (ripples.value[data.name]) {
+      ripples.value[data.name] = ripples.value[data.name].filter((r) => r.id !== id);
+    }
+  }, 600);
+
+  // 跳转
+  setTimeout(() => {
+    window.open(data.link, "_blank");
+  }, 200);
+};
 </script>
 
 <style lang="scss" scoped>
 .links {
-  font-family: "SiteLinksFont", "Pacifico-Regular", sans-serif !important;
+  width: 100%;
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  animation: fade 0.5s;
   .line {
-    margin: 2rem 0.25rem 1rem;
-    font-size: 1.1rem;
     display: flex;
     align-items: center;
-    animation: fade 0.5s;
+    height: 40px;
+    margin-bottom: 1rem;
     .title {
       margin-left: 8px;
-      font-size: 1.15rem;
-      text-shadow: 0 0 5px #00000050;
+      font-size: 1.1rem;
     }
   }
   .swiper {
-    left: -10px;
-    width: calc(100% + 20px);
-    padding: 5px 10px 0;
-    z-index: 0;
-    .swiper-slide {
-      height: 100%;
-    }
-    .swiper-pagination {
-      position: static;
-      margin-top: 4px;
-      :deep(.swiper-pagination-bullet) {
-        background-color: #fff;
-        width: 18px;
-        height: 4px;
-        border-radius: 4px;
-        transition: opacity 0.3s;
-        &:hover {
-          opacity: 1;
-        }
-      }
-    }
+    width: 100%;
   }
   .link-all {
     height: 220px;
     .item {
+      position: relative;
       height: 100px;
       width: 100%;
       display: flex;
@@ -130,40 +132,57 @@ onMounted(() => {
       justify-content: center;
       padding: 0 10px;
       animation: fade 0.5s;
-
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s ease;
       &:hover {
-        transform: scale(1.02);
+        transform: translateY(-3px) scale(1.02);
         background: rgb(0 0 0 / 40%);
-        transition: 0.3s;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        transition: 0.25s ease;
       }
-
       &:active {
-        transform: scale(1);
+        transform: scale(0.96);
+        transition: 0.1s;
       }
-
+      .ripple {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.4);
+        transform: scale(0);
+        animation: ripple 0.6s ease-out;
+        pointer-events: none;
+      }
       .name {
-        font-size: 1.1rem;
-        margin-left: 8px;
-      }
-      @media (min-width: 720px) and (max-width: 820px) {
-        .name {
-          display: none;
-        }
-      }
-      @media (max-width: 720px) {
-        height: 80px;
-      }
-      @media (max-width: 460px) {
-        flex-direction: column;
-        .name {
-          font-size: 1rem;
-          margin-left: 0;
-          margin-top: 8px;
-        }
+        margin-left: 12px;
+        font-size: 1rem;
       }
     }
-    @media (max-width: 720px) {
-      height: 180px;
+  }
+}
+
+@keyframes ripple {
+  to {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 720px) {
+  .links {
+    margin-top: 1rem;
+    .link-all {
+      height: 170px;
+      .item {
+        height: 75px;
+        flex-direction: column;
+        padding: 5px;
+        .name {
+          margin-left: 0;
+          margin-top: 6px;
+          font-size: 0.85rem;
+        }
+      }
     }
   }
 }

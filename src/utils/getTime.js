@@ -136,19 +136,34 @@ export const checkDays = () => {
   }
 };
 
-// 建站日期统计 - 精确计算
 export const siteDateStatistics = (startDate) => {
   const currentDate = new Date();
-  const diffTime = currentDate.getTime() - startDate.getTime();
-  const diffDays = Math.floor(diffTime / (1000 * 3600 * 24));
-  const diffMonths = Math.floor(diffDays / 30);
-  const diffYears = Math.floor(diffMonths / 12);
+  const startYear = startDate.getFullYear();
+  const startMonth = startDate.getMonth();
+  const startDay = startDate.getDate();
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth();
+  const currentDay = currentDate.getDate();
 
-  if (diffYears >= 1) {
-    return `本站已经苟活了 ${diffYears} 年 ${diffMonths % 12} 月 ${diffDays % 30} 天`;
-  } else if (diffMonths >= 1) {
-    return `本站已经苟活了 ${diffMonths} 月 ${diffDays % 30} 天`;
+  let years = currentYear - startYear;
+  let months = currentMonth - startMonth;
+  let days = currentDay - startDay;
+
+  if (days < 0) {
+    months--;
+    const prevMonthDays = new Date(currentYear, currentMonth, 0).getDate();
+    days += prevMonthDays;
+  }
+  if (months < 0) {
+    years--;
+    months += 12;
+  }
+
+  if (years >= 1) {
+    return `本站已经苟活了 ${years} 年 ${months} 月 ${days} 天`;
+  } else if (months >= 1) {
+    return `本站已经苟活了 ${months} 月 ${days} 天`;
   } else {
-    return `本站已经苟活了 ${diffDays} 天`;
+    return `本站已经苟活了 ${days} 天`;
   }
 };

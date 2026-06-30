@@ -9,12 +9,8 @@
 </template>
 
 <script setup>
-import { Error } from "@icon-park/vue-next";
 import { getHitokoto } from "@/api";
-import { mainStore } from "@/store";
 import debounce from "@/utils/debounce.js";
-
-const store = mainStore();
 
 // 一言数据
 const hitokotoData = reactive({
@@ -58,23 +54,10 @@ const typeWriter = (text, speed = 80) => {
 
 // 获取一言数据
 const getHitokotoData = async () => {
-  try {
-    const result = await getHitokoto();
-    hitokotoData.text = result.hitokoto;
-    hitokotoData.from = result.from;
-    typeWriter(hitokotoData.text);
-  } catch (error) {
-    ElMessage({
-      message: "一言获取失败",
-      icon: h(Error, {
-        theme: "filled",
-        fill: "#efefef",
-      }),
-    });
-    hitokotoData.text = "这里应该显示一句话";
-    hitokotoData.from = "BAJJDY";
-    typeWriter(hitokotoData.text);
-  }
+  const result = await getHitokoto();
+  hitokotoData.text = result.hitokoto;
+  hitokotoData.from = result.from;
+  typeWriter(hitokotoData.text);
 };
 
 // 更新一言数据（带频率限制）

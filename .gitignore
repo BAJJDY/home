@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# 环境变量（包含敏感信息）
+.env
+.env.local
+.env.*.local

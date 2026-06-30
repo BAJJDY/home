@@ -1,9 +1,13 @@
 import express from "express";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import path from "path";
+import { fileURLToPath } from "url";
 import https from "https";
 import http from "http";
 import crypto from "crypto";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;

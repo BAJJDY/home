@@ -1,1 +1,1 @@
-pnpm biuld
+npm run build

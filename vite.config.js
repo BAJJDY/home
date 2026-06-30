@@ -171,7 +171,11 @@ export default ({ mode }) =>
           ],
         },
       }),
-      viteCompression(),
+      viteCompression({
+        algorithm: "gzip",
+        verbose: false,
+        threshold: 1024,
+      }),
     ],
     server: {
       port: "3000",

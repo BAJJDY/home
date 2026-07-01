@@ -1,4 +1,4 @@
-export async function onRequestGet(context) {
+export async function onRequest(context) {
   const { request } = context;
   const referer = request.headers.get("referer") || "";
   const host = request.headers.get("host") || "";

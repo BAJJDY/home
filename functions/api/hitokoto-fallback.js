@@ -13,7 +13,7 @@ const verifyToken = (token, time, path) => {
   return token === expectedEncoded;
 };
 
-export async function onRequestGet(context) {
+export async function onRequest(context) {
   const { request } = context;
   const token = request.headers.get("x-request-token");
   const time = request.headers.get("x-request-time");
